@@ -8,3 +8,5 @@ require (
 	go.uber.org/ratelimit v0.2.0 // indirect
 	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
 )
+
+replace github.com/sakib0hasan/freshdesk-go => github.com/Peter2121/freshdesk-go latest
