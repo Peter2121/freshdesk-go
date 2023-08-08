@@ -174,10 +174,10 @@ func (service *freshDeskService) GetContact(ID uint64) (*Contact, error) {
 }
 func (service *freshDeskService) FindContactByEmail(email string) (Contact, error) {
 
-	var responseSchema []Contact
+	var responseSchema SrchContactResp
 	resp, err := service.restyClient.R().
 		SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
-		Get(fmt.Sprintf("%v%v", "/api/v2/contacts?email=", url.QueryEscape(email)))
+		Get(fmt.Sprintf("/api/v2/search/contacts?query=\"email:%s\"", url.QueryEscape("'"+email+"'")))
 
 	if err != nil {
 		log.Println(err)
@@ -188,11 +188,11 @@ func (service *freshDeskService) FindContactByEmail(email string) (Contact, erro
 		return Contact{}, errors.New(string(resp.Body()))
 	}
 
-	if len(responseSchema) == 0 {
-		return Contact{}, errors.New("contact not found")
+	if responseSchema.Total == 0 {
+		return Contact{}, errors.New("Contact not found")
 	}
 
-	return responseSchema[0], nil
+	return responseSchema.Results[0], nil
 }
 
 func (service *freshDeskService) GetAllContacts() ([]Contact, error) {

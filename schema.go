@@ -212,6 +212,11 @@ type SrchCompanyResp struct {
 	CompanyNames []CompanyName `json:"companies"`
 }
 
+type SrchContactResp struct {
+	Total        uint64      `json:"total"`
+	Results      []Contact   `json:"results"`
+}
+
 type CompanyCreatePayload struct {
 	CustomFields interface{} `json:"custom_fields,omitempty"`
 	Description  string      `json:"description,omitempty"`
