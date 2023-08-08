@@ -1,4 +1,4 @@
-module github.com/sakib0hasan/freshdesk-go
+module github.com/Peter2121/freshdesk-go
 
 go 1.18
 
