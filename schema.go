@@ -203,6 +203,15 @@ type Company struct {
 	UpdatedAt    *time.Time  `json:"updated_at"`
 }
 
+type CompanyName struct {
+	ID           uint64      `json:"id"`
+	Name         string      `json:"name"`
+}
+
+type SrchCompanyResp struct {
+	CompanyNames []CompanyName `json:"companies"`
+}
+
 type CompanyCreatePayload struct {
 	CustomFields interface{} `json:"custom_fields,omitempty"`
 	Description  string      `json:"description,omitempty"`

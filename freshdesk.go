@@ -32,6 +32,7 @@ type Client interface {
 
 	GetCompany(ID uint64) (*Company, error)
 	GetAllCompanies() ([]Company, error)
+	SearchCompanies(mask string) ([]CompanyName, error)
 	CreateCompany(payload CompanyCreatePayload) (*Company, error)
 	UpdateCompany(ID uint64, payload CompanyUpdatePayload) (*Company, error)
 	DeleteCompany(ID uint64) (*interface{}, error)
@@ -322,6 +323,25 @@ func (service *freshDeskService) GetAllCompanies() ([]Company, error) {
 	}
 
 	return responseSchema, nil
+}
+
+func (service *freshDeskService) SearchCompanies(mask string) ([]CompanyName, error) {
+
+	var responseSchema SrchCompanyResp
+	resp, err := service.restyClient.R().
+		SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
+		Get(fmt.Sprintf("%v%v", "/api/v2/companies/autocomplete?name=", mask))
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return responseSchema.CompanyNames, nil
 }
 
 func (service *freshDeskService) CreateCompany(payload CompanyCreatePayload) (*Company, error) {
