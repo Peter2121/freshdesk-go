@@ -132,7 +132,7 @@ type Contact struct {
 	Mobile            string        `json:"mobile"`
 	Name              string        `json:"name"`
 	OrgContactID      int64         `json:"org_contact_id"`
-	OtherCompanies    []interface{} `json:"other_companies"`
+	OtherCompanies    []CompanyContactOther `json:"other_companies"`
 	OtherEmails       []string      `json:"other_emails"`
 	OtherPhoneNumbers []interface{} `json:"other_phone_numbers"`
 	Phone             string        `json:"phone"`
@@ -239,4 +239,11 @@ type CompanyUpdatePayload struct {
 	AccountTier  string      `json:"account_tier,omitempty"`
 	RenewalDate  string      `json:"renewal_date,omitempty"`
 	Industry     string      `json:"industry,omitempty"`
+}
+
+type CompanyContactOther struct {
+	ID              uint64      `json:"id"`
+	ViewAllTickets  bool        `json:"view_all_tickets,omitempty"`
+	Name            string      `json:"name,omitempty"`
+	Avatar          interface{} `json:"avatar,omitempty"`
 }
