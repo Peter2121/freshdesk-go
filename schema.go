@@ -156,7 +156,7 @@ type ContactCreatePayload struct {
 	OtherEmails      []string      `json:"other_emails,omitempty"`
 	CompanyID        uint64        `json:"company_id,omitempty"`
 	ViewAllTickets   bool          `json:"view_all_tickets,omitempty"`
-	OtherCompanies   []CompanyContactOther `json:"other_companies,omitempty"`
+	OtherCompanies   []CompanyContactOtherUpdatePayload `json:"other_companies,omitempty"`
 	Address          string        `json:"address,omitempty"`
 	Avatar           interface{}   `json:"avatar,omitempty"`
 	CustomFields     interface{}   `json:"custom_fields,omitempty"`
@@ -177,7 +177,7 @@ type ContactUpdatePayload struct {
 	OtherEmails      []string      `json:"other_emails,omitempty"`
 	CompanyID        uint64        `json:"company_id,omitempty"`
 	ViewAllTickets   bool          `json:"view_all_tickets,omitempty"`
-	OtherCompanies   []CompanyContactOther `json:"other_companies,omitempty"`
+	OtherCompanies   []CompanyContactOtherUpdatePayload `json:"other_companies,omitempty"`
 	Address          string        `json:"address,omitempty"`
 	Avatar           interface{}   `json:"avatar,omitempty"`
 	CustomFields     interface{}   `json:"custom_fields,omitempty"`
@@ -246,4 +246,9 @@ type CompanyContactOther struct {
 	ViewAllTickets  bool        `json:"view_all_tickets,omitempty"`
 	Name            string      `json:"name,omitempty"`
 	Avatar          interface{} `json:"avatar,omitempty"`
+}
+
+type CompanyContactOtherUpdatePayload struct {
+	ID              uint64      `json:"company_id"`
+	ViewAllTickets  bool        `json:"view_all_tickets,omitempty"`
 }
