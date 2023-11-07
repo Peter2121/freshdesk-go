@@ -4,12 +4,13 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/go-resty/resty/v2"
-	"go.uber.org/ratelimit"
 	"log"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/go-resty/resty/v2"
+	"go.uber.org/ratelimit"
 )
 
 type Client interface {
@@ -19,6 +20,7 @@ type Client interface {
 	GetAllTickets() ([]Ticket, error)
 	GetTicketsByCompanyID(companyID, pageSize, page int) ([]Ticket, error, bool)
 	CreateTicket(payload TicketCreatePayload) (*Ticket, error)
+	CreateTicketWithAttachments(payload TicketCreatePayload, files []Attachment) (*Ticket, error)
 	UpdateTicket(ID uint64, payload TicketUpdatePayload) (*Ticket, error)
 	DeleteTicket(ID uint64) (*interface{}, error)
 
@@ -114,6 +116,38 @@ func (service *freshDeskService) CreateTicket(payload TicketCreatePayload) (*Tic
 	}
 
 	return &responseSchema, nil
+}
+
+func (service *freshDeskService) CreateTicketWithAttachments(payload TicketCreatePayload, files []Attachment) (*Ticket, error) {
+
+	var responseSchema Ticket
+	new_ticket, err := service.CreateTicket(payload)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	for _, att := range files {
+		req := service.restyClient.R()
+		//req = req.SetFileReader("attachments[]", att.FileName, att.FileData) /**** Does not work like this ****/
+		req = req.SetFile("attachments[]", att.FileData.Name())
+		req = req.SetResult(&responseSchema)
+		resp, err1 := req.Put(fmt.Sprintf("/api/v2/tickets/%v", new_ticket.ID))
+		if err1 != nil {
+			log.Println(err1)
+		}
+		if resp.StatusCode() != http.StatusOK {
+			log.Println(string(resp.Body()))
+		}
+	}
+
+	new_ticket, err = service.GetTicket(new_ticket.ID)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return new_ticket, nil
 }
 
 func (service *freshDeskService) UpdateTicket(ID uint64, payload TicketUpdatePayload) (*Ticket, error) {

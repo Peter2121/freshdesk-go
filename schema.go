@@ -1,6 +1,9 @@
 package freshdesk
 
-import "time"
+import (
+	"os"
+	"time"
+)
 
 type Ticket struct {
 	Attachments     []interface{} `json:"attachments"`
@@ -113,79 +116,79 @@ type TicketUpdatePayload struct {
 }
 
 type Contact struct {
-	Active            bool          `json:"active"`
-	Address           string        `json:"address"`
-	Avatar            interface{}   `json:"avatar"`
-	CompanyID         uint64        `json:"company_id"`
-	CreatedAt         *time.Time    `json:"created_at"`
-	CsatRating        interface{}   `json:"csat_rating"`
-	CustomFields      interface{}   `json:"custom_fields"`
-	Deleted           bool          `json:"deleted"`
-	Description       string        `json:"description"`
-	Email             string        `json:"email"`
-	FacebookID        interface{}   `json:"facebook_id"`
-	FirstName         string        `json:"first_name"`
-	ID                uint64        `json:"id"`
-	JobTitle          string        `json:"job_title"`
-	Language          string        `json:"language"`
-	LastName          string        `json:"last_name"`
-	Mobile            string        `json:"mobile"`
-	Name              string        `json:"name"`
-	OrgContactID      int64         `json:"org_contact_id"`
+	Active            bool                  `json:"active"`
+	Address           string                `json:"address"`
+	Avatar            interface{}           `json:"avatar"`
+	CompanyID         uint64                `json:"company_id"`
+	CreatedAt         *time.Time            `json:"created_at"`
+	CsatRating        interface{}           `json:"csat_rating"`
+	CustomFields      interface{}           `json:"custom_fields"`
+	Deleted           bool                  `json:"deleted"`
+	Description       string                `json:"description"`
+	Email             string                `json:"email"`
+	FacebookID        interface{}           `json:"facebook_id"`
+	FirstName         string                `json:"first_name"`
+	ID                uint64                `json:"id"`
+	JobTitle          string                `json:"job_title"`
+	Language          string                `json:"language"`
+	LastName          string                `json:"last_name"`
+	Mobile            string                `json:"mobile"`
+	Name              string                `json:"name"`
+	OrgContactID      int64                 `json:"org_contact_id"`
 	OtherCompanies    []CompanyContactOther `json:"other_companies"`
-	OtherEmails       []string      `json:"other_emails"`
-	OtherPhoneNumbers []interface{} `json:"other_phone_numbers"`
-	Phone             string        `json:"phone"`
-	PreferredSource   string        `json:"preferred_source"`
-	Tags              []string      `json:"tags"`
-	TimeZone          string        `json:"time_zone"`
-	TwitterID         string        `json:"twitter_id"`
-	UniqueExternalID  string        `json:"unique_external_id"`
-	UpdatedAt         *time.Time    `json:"updated_at"`
-	ViewAllTickets    bool          `json:"view_all_tickets"`
-	VisitorID         string        `json:"visitor_id"`
+	OtherEmails       []string              `json:"other_emails"`
+	OtherPhoneNumbers []interface{}         `json:"other_phone_numbers"`
+	Phone             string                `json:"phone"`
+	PreferredSource   string                `json:"preferred_source"`
+	Tags              []string              `json:"tags"`
+	TimeZone          string                `json:"time_zone"`
+	TwitterID         string                `json:"twitter_id"`
+	UniqueExternalID  string                `json:"unique_external_id"`
+	UpdatedAt         *time.Time            `json:"updated_at"`
+	ViewAllTickets    bool                  `json:"view_all_tickets"`
+	VisitorID         string                `json:"visitor_id"`
 }
 
 type ContactCreatePayload struct {
-	Name             string        `json:"name,omitempty"`
-	Email            string        `json:"email,omitempty"`
-	Phone            string        `json:"phone,omitempty"`
-	Mobile           string        `json:"mobile,omitempty"`
-	TwitterID        string        `json:"twitter_id,omitempty"`
-	UniqueExternalID string        `json:"unique_external_id,omitempty"`
-	OtherEmails      []string      `json:"other_emails,omitempty"`
-	CompanyID        uint64        `json:"company_id,omitempty"`
-	ViewAllTickets   bool          `json:"view_all_tickets,omitempty"`
+	Name             string                             `json:"name,omitempty"`
+	Email            string                             `json:"email,omitempty"`
+	Phone            string                             `json:"phone,omitempty"`
+	Mobile           string                             `json:"mobile,omitempty"`
+	TwitterID        string                             `json:"twitter_id,omitempty"`
+	UniqueExternalID string                             `json:"unique_external_id,omitempty"`
+	OtherEmails      []string                           `json:"other_emails,omitempty"`
+	CompanyID        uint64                             `json:"company_id,omitempty"`
+	ViewAllTickets   bool                               `json:"view_all_tickets,omitempty"`
 	OtherCompanies   []CompanyContactOtherUpdatePayload `json:"other_companies,omitempty"`
-	Address          string        `json:"address,omitempty"`
-	Avatar           interface{}   `json:"avatar,omitempty"`
-	CustomFields     interface{}   `json:"custom_fields,omitempty"`
-	Description      string        `json:"description,omitempty"`
-	JobTitle         string        `json:"job_title,omitempty"`
-	Languages        string        `json:"language,omitempty"`
-	Tags             []string      `json:"tags,omitempty"`
-	TimeZone         string        `json:"time_zone,omitempty"`
+	Address          string                             `json:"address,omitempty"`
+	Avatar           interface{}                        `json:"avatar,omitempty"`
+	CustomFields     interface{}                        `json:"custom_fields,omitempty"`
+	Description      string                             `json:"description,omitempty"`
+	JobTitle         string                             `json:"job_title,omitempty"`
+	Languages        string                             `json:"language,omitempty"`
+	Tags             []string                           `json:"tags,omitempty"`
+	TimeZone         string                             `json:"time_zone,omitempty"`
 }
 
 type ContactUpdatePayload struct {
-	Name             string        `json:"name,omitempty"`
-	Email            string        `json:"email,omitempty"`
-	Phone            string        `json:"phone,omitempty"`
-	Mobile           string        `json:"mobile,omitempty"`
-	TwitterID        string        `json:"twitter_id,omitempty"`
-	UniqueExternalID string        `json:"unique_external_id,omitempty"`
-	OtherEmails      []string      `json:"other_emails,omitempty"`
-	CompanyID        uint64        `json:"company_id,omitempty"`
-	ViewAllTickets   bool          `json:"view_all_tickets,omitempty"`
+	Name             string                             `json:"name,omitempty"`
+	Email            string                             `json:"email,omitempty"`
+	Phone            string                             `json:"phone,omitempty"`
+	Mobile           string                             `json:"mobile,omitempty"`
+	TwitterID        string                             `json:"twitter_id,omitempty"`
+	UniqueExternalID string                             `json:"unique_external_id,omitempty"`
+	OtherEmails      []string                           `json:"other_emails,omitempty"`
+	CompanyID        uint64                             `json:"company_id,omitempty"`
+	ViewAllTickets   bool                               `json:"view_all_tickets,omitempty"`
 	OtherCompanies   []CompanyContactOtherUpdatePayload `json:"other_companies,omitempty"`
-	Address          string        `json:"address,omitempty"`
-	Avatar           interface{}   `json:"avatar,omitempty"`
-	CustomFields     interface{}   `json:"custom_fields,omitempty"`
-	Description      string        `json:"description,omitempty"`
-	JobTitle         string        `json:"job_title,omitempty"`
-	Languages        string        `json:"language,omitempty"`
-	Tags             []string      `json:"tags,omitempty"`
-	TimeZone         string        `json:"time_zone,omitempty"`
+	Address          string                             `json:"address,omitempty"`
+	Avatar           interface{}                        `json:"avatar,omitempty"`
+	CustomFields     interface{}                        `json:"custom_fields,omitempty"`
+	Description      string                             `json:"description,omitempty"`
+	JobTitle         string                             `json:"job_title,omitempty"`
+	Languages        string                             `json:"language,omitempty"`
+	Tags             []string                           `json:"tags,omitempty"`
+	TimeZone         string                             `json:"time_zone,omitempty"`
 }
 
 type Company struct {
@@ -204,8 +207,8 @@ type Company struct {
 }
 
 type CompanyName struct {
-	ID           uint64      `json:"id"`
-	Name         string      `json:"name"`
+	ID   uint64 `json:"id"`
+	Name string `json:"name"`
 }
 
 type SrchCompanyResp struct {
@@ -213,8 +216,8 @@ type SrchCompanyResp struct {
 }
 
 type SrchContactResp struct {
-	Total        uint64      `json:"total"`
-	Results      []Contact   `json:"results"`
+	Total   uint64    `json:"total"`
+	Results []Contact `json:"results"`
 }
 
 type CompanyCreatePayload struct {
@@ -242,13 +245,19 @@ type CompanyUpdatePayload struct {
 }
 
 type CompanyContactOther struct {
-	ID              uint64      `json:"id"`
-	ViewAllTickets  bool        `json:"view_all_tickets,omitempty"`
-	Name            string      `json:"name,omitempty"`
-	Avatar          interface{} `json:"avatar,omitempty"`
+	ID             uint64      `json:"id"`
+	ViewAllTickets bool        `json:"view_all_tickets,omitempty"`
+	Name           string      `json:"name,omitempty"`
+	Avatar         interface{} `json:"avatar,omitempty"`
 }
 
 type CompanyContactOtherUpdatePayload struct {
-	ID              uint64      `json:"company_id"`
-	ViewAllTickets  bool        `json:"view_all_tickets,omitempty"`
+	ID             uint64 `json:"company_id"`
+	ViewAllTickets bool   `json:"view_all_tickets,omitempty"`
+}
+
+type Attachment struct {
+	FileName string
+	FileType string
+	FileData *os.File
 }
