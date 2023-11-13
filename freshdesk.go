@@ -31,6 +31,7 @@ type Client interface {
 	UpdateContact(ID uint64, payload ContactUpdatePayload) (*Contact, error)
 	SoftDeleteContact(ID uint64) (*interface{}, error)
 	PermanentlyDeleteContact(ID uint64) (*interface{}, error)
+	AddOtherCompanyForContact(fd_contact *Contact, id_client uint64, view_all bool) (bool, error)
 
 	GetCompany(ID uint64) (*Company, error)
 	GetAllCompanies() ([]Company, error)
@@ -452,4 +453,41 @@ func (service *freshDeskService) GetTicketsByCompanyID(companyID, pageSize, page
 	}
 
 	return responseSchema, nil, resp.Header().Get("Link") != ""
+}
+
+func (service *freshDeskService) AddOtherCompanyForContact(fd_contact *Contact, id_client uint64, view_all bool) (bool, error) {
+	other_company := CompanyContactOtherUpdatePayload{
+		ID:             id_client,
+		ViewAllTickets: view_all,
+	}
+	var other_companies []CompanyContactOtherUpdatePayload
+	for _, c := range fd_contact.OtherCompanies {
+		other_companies = append(other_companies, CompanyContactOtherUpdatePayload{ID: c.ID, ViewAllTickets: c.ViewAllTickets})
+	}
+	other_companies = append(other_companies, other_company)
+	update_contact := ContactUpdatePayload{
+		Name:             fd_contact.Name,
+		Email:            fd_contact.Email,
+		Phone:            fd_contact.Phone,
+		Mobile:           fd_contact.Mobile,
+		TwitterID:        fd_contact.TwitterID,
+		UniqueExternalID: fd_contact.UniqueExternalID,
+		OtherEmails:      fd_contact.OtherEmails,
+		CompanyID:        fd_contact.CompanyID,
+		ViewAllTickets:   fd_contact.ViewAllTickets,
+		OtherCompanies:   other_companies,
+		Address:          fd_contact.Address,
+		Avatar:           fd_contact.Avatar,
+		CustomFields:     fd_contact.CustomFields,
+		Description:      fd_contact.Description,
+		JobTitle:         fd_contact.JobTitle,
+		Languages:        fd_contact.Language,
+		Tags:             fd_contact.Tags,
+		TimeZone:         fd_contact.TimeZone,
+	}
+	_, err3 := service.UpdateContact(fd_contact.ID, update_contact)
+	if err3 != nil {
+		return false, err3
+	}
+	return true, nil
 }
