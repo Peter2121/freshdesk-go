@@ -263,7 +263,7 @@ type Attachment struct {
 }
 
 type Group struct {
-	ID                     uint64      `json:"id"`
+	ID                     int64       `json:"id"`
 	Name                   string      `json:"name,omitempty"`
 	Description            string      `json:"description,omitempty"`
 	EscalateTo             uint64      `json:"escalate_to,omitempty"`
