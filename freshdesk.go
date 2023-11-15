@@ -39,6 +39,8 @@ type Client interface {
 	CreateCompany(payload CompanyCreatePayload) (*Company, error)
 	UpdateCompany(ID uint64, payload CompanyUpdatePayload) (*Company, error)
 	DeleteCompany(ID uint64) (*interface{}, error)
+
+	GetAllGroups() ([]Group, error)
 }
 
 type freshDeskService struct {
@@ -490,4 +492,22 @@ func (service *freshDeskService) AddOtherCompanyForContact(fd_contact *Contact, 
 		return false, err3
 	}
 	return true, nil
+}
+
+func (service *freshDeskService) GetAllGroups() ([]Group, error) {
+	var responseSchema []Group
+	resp, err := service.restyClient.R().
+		SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
+		Get("/api/v2/admin/groups")
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return responseSchema, nil
 }

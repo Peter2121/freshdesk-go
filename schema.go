@@ -261,3 +261,18 @@ type Attachment struct {
 	FileType string
 	FileData *os.File
 }
+
+type Group struct {
+	ID                     uint64      `json:"id"`
+	Name                   string      `json:"name,omitempty"`
+	Description            string      `json:"description,omitempty"`
+	EscalateTo             uint64      `json:"escalate_to,omitempty"`
+	UnassignedFor          string      `json:"unassigned_for,omitempty"`
+	Agents                 []uint64    `json:"agent_ids,omitempty"`
+	CreatedAt              *time.Time  `json:"created_at"`
+	UpdatedAt              *time.Time  `json:"updated_at"`
+	AllowAgentsChangeAvail bool        `json:"allow_agents_to_change_availability,omitempty"`
+	BusinessCalendar       uint64      `json:"business_calendar_id,omitempty"`
+	Type                   string      `json:"type,omitempty"`
+	AutoAgentAssign        interface{} `json:"automatic_agent_assignment,omitempty"`
+}
