@@ -58,6 +58,10 @@ const (
 	StatusClosed   Status = 5
 )
 
+const (
+	ERR_CONTACT_NOT_FOUND string = "Contact not found"
+)
+
 type TicketCreatePayload struct {
 	Name             string        `json:"name,omitempty"`
 	RequesterID      int64         `json:"requester_id,omitempty"` // UserID of the requester
