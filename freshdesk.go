@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/go-resty/resty/v2"
@@ -26,7 +28,7 @@ type Client interface {
 
 	FindContactByEmail(email string) (Contact, error)
 	GetContact(ID uint64) (*Contact, error)
-	GetAllContacts() ([]Contact, error)
+	GetAllContacts() ([]ContactShort, error)
 	CreateContact(payload ContactCreatePayload) (*Contact, error)
 	UpdateContact(ID uint64, payload ContactUpdatePayload) (*Contact, error)
 	SoftDeleteContact(ID uint64) (*interface{}, error)
@@ -233,23 +235,55 @@ func (service *freshDeskService) FindContactByEmail(email string) (Contact, erro
 	return responseSchema.Results[0], nil
 }
 
-func (service *freshDeskService) GetAllContacts() ([]Contact, error) {
+func (service *freshDeskService) GetAllContacts() ([]ContactShort, error) {
 
-	var responseSchema []Contact
-	resp, err := service.restyClient.R().
-		SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
-		Get("/api/v2/contacts")
+	var responseSchema []ContactShort
+	var responseAll []ContactShort
+	var head http.Header
+	var link_header string
+	const ENDPOINT = "/api/v2/contacts"
+	var page_suffix string = ""
+	var parts []string
 
-	if err != nil {
-		log.Println(err)
-		return nil, err
+	for {
+		resp, err := service.restyClient.R().
+			SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
+			Get(ENDPOINT + page_suffix)
+
+		os.Stderr.WriteString(".")
+
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+
+		if resp.StatusCode() != http.StatusOK {
+			return nil, errors.New(string(resp.Body()))
+		}
+
+		// link: <https://bimppro.freshdesk.com/api/v2/contacts?page=2>; rel="next"
+		responseAll = append(responseAll, responseSchema...)
+		head = resp.Header()
+		link_header = head.Get("link")
+		if len(link_header) == 0 {
+			break
+		}
+		if !strings.Contains(link_header, ENDPOINT) {
+			break
+		}
+		parts = strings.Split(link_header, "?")
+		if len(parts) < 2 {
+			break
+		}
+		link_header = parts[1]
+		parts = strings.Split(link_header, ">")
+		if len(parts) < 2 {
+			break
+		}
+		page_suffix = "?" + parts[0]
 	}
-
-	if resp.StatusCode() != http.StatusOK {
-		return nil, errors.New(string(resp.Body()))
-	}
-
-	return responseSchema, nil
+	os.Stderr.WriteString("\n")
+	return responseAll, nil
 }
 
 func (service *freshDeskService) CreateContact(payload ContactCreatePayload) (*Contact, error) {

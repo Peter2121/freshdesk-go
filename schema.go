@@ -153,6 +153,28 @@ type Contact struct {
 	VisitorID         string                `json:"visitor_id"`
 }
 
+type ContactShort struct {
+	Active         bool        `json:"active"`
+	Address        string      `json:"address"`
+	CompanyID      uint64      `json:"company_id"`
+	CreatedAt      *time.Time  `json:"created_at"`
+	CustomFields   interface{} `json:"custom_fields"`
+	Deleted        bool        `json:"deleted"`
+	Description    string      `json:"description"`
+	Email          string      `json:"email"`
+	FacebookID     interface{} `json:"facebook_id"`
+	ID             uint64      `json:"id"`
+	JobTitle       string      `json:"job_title"`
+	Language       string      `json:"language"`
+	Mobile         string      `json:"mobile"`
+	Name           string      `json:"name"`
+	OtherCompanies []int64     `json:"other_companies"`
+	Phone          string      `json:"phone"`
+	Tags           []string    `json:"tags"`
+	TwitterID      string      `json:"twitter_id"`
+	UpdatedAt      *time.Time  `json:"updated_at"`
+}
+
 type ContactCreatePayload struct {
 	Name             string                             `json:"name,omitempty"`
 	Email            string                             `json:"email,omitempty"`
