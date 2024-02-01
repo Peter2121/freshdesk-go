@@ -230,6 +230,7 @@ type Company struct {
 	Industry     string      `json:"industry"`
 	CreatedAt    *time.Time  `json:"created_at"`
 	UpdatedAt    *time.Time  `json:"updated_at"`
+	OrgCompanyID uint64      `json:"org_company_id"`
 }
 
 type CompanyName struct {
@@ -301,4 +302,19 @@ type Group struct {
 	BusinessCalendar       uint64      `json:"business_calendar_id,omitempty"`
 	Type                   string      `json:"type,omitempty"`
 	AutoAgentAssign        interface{} `json:"automatic_agent_assignment,omitempty"`
+}
+
+type CustomObject struct {
+	DisplayID    string                  `json:"display_id"`
+	CreatedTime  uint64                  `json:"created_time"`
+	UpdatedTime  uint64                  `json:"updated_time"`
+	Data         map[string]interface{}  `json:"data"`
+	Version      uint64                  `json:"version"`
+	Metadata     map[string]interface{}  `json:"metadata"`
+	Links        map[string]interface{}  `json:"_links"`
+}
+
+type CustomObjectSearchResp struct {
+	Records  []CustomObject          `json:"records"`
+	Links    map[string]interface{}  `json:"_links"`	
 }

@@ -44,6 +44,8 @@ type Client interface {
 	DeleteCompany(ID uint64) (*interface{}, error)
 
 	GetAllGroups() ([]Group, error)
+	
+	SearchCustomObjects(SchemaID uint64, filter map[string]string) ([]CustomObject, error)
 }
 
 type freshDeskService struct {
@@ -577,4 +579,24 @@ func (service *freshDeskService) GetAllGroups() ([]Group, error) {
 	}
 
 	return responseSchema, nil
+}
+
+func (service *freshDeskService) SearchCustomObjects(SchemaID uint64, filter map[string]string) ([]CustomObject, error) {
+	var responseSchema CustomObjectSearchResp
+	
+	resp, err := service.restyClient.R().
+		SetResult(&responseSchema).
+		SetQueryParams(filter).
+		Get(fmt.Sprintf("/api/v2/custom_objects/schemas/%d/records", SchemaID))
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return responseSchema.Records, nil
 }
