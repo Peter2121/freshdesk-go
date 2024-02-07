@@ -44,8 +44,10 @@ type Client interface {
 	DeleteCompany(ID uint64) (*interface{}, error)
 
 	GetAllGroups() ([]Group, error)
-	
+
 	SearchCustomObjects(SchemaID uint64, filter map[string]string) ([]CustomObject, error)
+	CreateCustomObject(schema_id uint64, data map[string]interface{}) (*CustomObjectUpdateResult, error)
+	UpdateCustomObject(schema_id uint64, payload CustomObjectUpdatePayload) (*CustomObjectUpdateResult, error)
 }
 
 type freshDeskService struct {
@@ -581,13 +583,13 @@ func (service *freshDeskService) GetAllGroups() ([]Group, error) {
 	return responseSchema, nil
 }
 
-func (service *freshDeskService) SearchCustomObjects(SchemaID uint64, filter map[string]string) ([]CustomObject, error) {
+func (service *freshDeskService) SearchCustomObjects(schema_id uint64, filter map[string]string) ([]CustomObject, error) {
 	var responseSchema CustomObjectSearchResp
-	
+
 	resp, err := service.restyClient.R().
 		SetResult(&responseSchema).
 		SetQueryParams(filter).
-		Get(fmt.Sprintf("/api/v2/custom_objects/schemas/%d/records", SchemaID))
+		Get(fmt.Sprintf("/api/v2/custom_objects/schemas/%d/records", schema_id))
 
 	if err != nil {
 		log.Println(err)
@@ -599,4 +601,44 @@ func (service *freshDeskService) SearchCustomObjects(SchemaID uint64, filter map
 	}
 
 	return responseSchema.Records, nil
+}
+
+func (service *freshDeskService) CreateCustomObject(schema_id uint64, data map[string]interface{}) (*CustomObjectUpdateResult, error) {
+	var responseSchema CustomObjectUpdateResult
+
+	resp, err := service.restyClient.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(data).SetResult(&responseSchema).
+		Post(fmt.Sprintf("/api/v2/custom_objects/schemas/%d/records", schema_id))
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusCreated {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return &responseSchema, nil
+}
+
+func (service *freshDeskService) UpdateCustomObject(schema_id uint64, payload CustomObjectUpdatePayload) (*CustomObjectUpdateResult, error) {
+	var responseSchema CustomObjectUpdateResult
+
+	resp, err := service.restyClient.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(payload).SetResult(&responseSchema).
+		Put(fmt.Sprintf("/api/v2/custom_objects/schemas/%d/records/%s", schema_id, payload.DisplayID))
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return &responseSchema, nil
 }

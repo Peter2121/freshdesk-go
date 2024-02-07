@@ -318,3 +318,16 @@ type CustomObjectSearchResp struct {
 	Records  []CustomObject          `json:"records"`
 	Links    map[string]interface{}  `json:"_links"`	
 }
+
+type CustomObjectUpdatePayload struct {
+	DisplayID    string                  `json:"display_id"`
+	Version      uint64                  `json:"version"`
+	Data         map[string]interface{}  `json:"data"`
+}
+
+type CustomObjectUpdateResult struct {
+	DisplayID    string                  `json:"display_id"`
+	CreatedTime  uint64                  `json:"created_time"`
+	UpdatedTime  uint64                  `json:"updated_time"`
+	Data         map[string]interface{}  `json:"data"`
+}
