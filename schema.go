@@ -5,6 +5,36 @@ import (
 	"time"
 )
 
+type TicketMessage {
+	Body              string      `json:"body"`
+	BodyText          string      `json:"body_text"`
+	ID                uint64      `json:"id"`
+	IsIncoming        bool        `json:"incoming"`
+	IsPrivate         bool        `json:"private"`
+	UserId            uint64      `json:"user_id"`
+	SupportEmail      string      `json:"support_email"`
+	Source            uint64      `json:"source"`
+	Category          uint64      `json:"category"`
+	EmailsTo          []string    `json:"to_emails"`
+	EmailFrom         string      `json:"from_email"`
+	EmailsCc          []string    `json:"cc_emails"`
+	EmailsBcc         []string    `json:"bcc_emails"`
+	EmailFailureCount uint64      `json:"email_failure_count"`
+	OutgoingFailures  uint64      `json:"outgoing_failures"`
+	ThreadId          uint64      `json:"thread_id"`
+	ThreadMessageId   uint64      `json:"thread_message_id"`
+	CreatedAt         *time.Time  `json:"created_at"`
+	UpdatedAt         *time.Time  `json:"updated_at"`
+	EditedAt          *time.Time  `json:"last_edited_at"`
+	EditedByUserId    uint64      `json:"last_edited_user_id"`
+	Attachments       interface{} `json:"attachments"`
+	AutomationId      uint64      `json:"automation_id"`
+	AutomationTypeId  uint64      `json:"automation_type_id"`
+	IsAutoResponse    bool        `json:"auto_response"`
+	TicketId          uint64      `json:"ticket_id"`
+	SrcAdditionalInfo interface{} `json:"source_additional_info"`
+}
+
 type Ticket struct {
 	Attachments     []interface{} `json:"attachments"`
 	CcEmails        []string      `json:"cc_emails"`
@@ -40,6 +70,7 @@ type Ticket struct {
 	Type            string        `json:"type"`
 	CreatedAt       *time.Time    `json:"created_at"`
 	UpdatedAt       *time.Time    `json:"updated_at"`
+	Conversations   []TicketMessage `json:"conversations"`
 }
 
 type Priority int64

@@ -19,6 +19,7 @@ type Client interface {
 	// GetAPIStatus() (*interface{}, error)
 
 	GetTicket(ID uint64) (*Ticket, error)
+	GetTicketWithConversations(ID uint64) (*Ticket, error)
 	GetAllTickets() ([]Ticket, error)
 	GetTicketsByCompanyID(companyID, pageSize, page int) ([]Ticket, error, bool)
 	CreateTicket(payload TicketCreatePayload) (*Ticket, error)
@@ -70,12 +71,26 @@ func NewClient(baseUrl string, user string, password string, maxRequestPerMinute
 }
 
 // Ticket
+func (service *freshDeskService) GetTicketWithConversations(ID uint64) (*Ticket, error) {
+	return service.GetTicketExt(ID, true)
+}
+
 func (service *freshDeskService) GetTicket(ID uint64) (*Ticket, error) {
+	return service.GetTicketExt(ID, false)
+}
+
+func (service *freshDeskService) GetTicketExt(ID uint64, with_conversations bool) (*Ticket, error) {
 
 	var responseSchema Ticket
+	var req_string string
+	if with_conversations {
+		req_string = fmt.Sprintf("%v%v?include=conversations", "/api/v2/tickets/", ID)
+	} else {
+		req_string = fmt.Sprintf("%v%v", "/api/v2/tickets/", ID)
+	}
 	resp, err := service.restyClient.R().
 		SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
-		Get(fmt.Sprintf("%v%v", "/api/v2/tickets/", ID))
+		Get(req_string)
 
 	if err != nil {
 		log.Println(err)
