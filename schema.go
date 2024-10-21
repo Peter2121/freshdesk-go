@@ -35,6 +35,15 @@ type TicketMessage {
 	SrcAdditionalInfo interface{} `json:"source_additional_info"`
 }
 
+type TicketMessageCreatePayload struct {
+	BodyHtml    string        `json:"body"`
+	Attachments []interface{} `json:"attachments,omitempty"`
+	EmailFrom   string        `json:"from_email,omitempty"`
+	UserId      uint64        `json:"user_id,omitempty"`
+	CcEmails    []string      `json:"cc_emails,omitempty"`
+	BccEmails   []string      `json:"bcc_emails,omitempty"`
+}
+
 type Ticket struct {
 	Attachments     []interface{} `json:"attachments"`
 	CcEmails        []string      `json:"cc_emails"`

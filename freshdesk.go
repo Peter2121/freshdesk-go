@@ -26,6 +26,7 @@ type Client interface {
 	CreateTicketWithAttachments(payload TicketCreatePayload, files []Attachment) (*Ticket, error)
 	UpdateTicket(ID uint64, payload TicketUpdatePayload) (*Ticket, error)
 	UpdateTicketStatus(ID uint64, payload TicketStatusUpdatePayload) (*Ticket, error)
+	CreateTicketMessage(ID uint64, payload TicketMessageCreatePayload) (*TicketMessage, error)
 	DeleteTicket(ID uint64) (*interface{}, error)
 
 	FindContactByEmail(email string) (Contact, error)
@@ -212,6 +213,26 @@ func (service *freshDeskService) UpdateTicketStatus(ID uint64, payload TicketSta
 	}
 
 	return &responseSchema, nil
+}
+
+func (service *freshDeskService) CreateTicketMessage(ID uint64, payload TicketMessageCreatePayload) (*TicketMessage, error) {
+	var responseSchema TicketMessage
+	resp, err := service.restyClient.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(payload).SetResult(&responseSchema).
+		Post(fmt.Sprintf("/api/v2/tickets/%v/reply", ID))
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return &responseSchema, nil
+
 }
 
 func (service *freshDeskService) DeleteTicket(ID uint64) (*interface{}, error) {
