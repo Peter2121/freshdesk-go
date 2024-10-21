@@ -150,6 +150,10 @@ type TicketUpdatePayload struct {
 	InternalGroupID  int64         `json:"internal_group_id,omitempty"`
 }
 
+type TicketStatusUpdatePayload struct {
+	Status           int64         `json:"status"`
+}
+
 type Contact struct {
 	Active            bool                  `json:"active"`
 	Address           string                `json:"address"`
