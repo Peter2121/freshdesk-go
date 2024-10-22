@@ -134,7 +134,7 @@ func (service *freshDeskService) CreateSdTicket(payload TicketCreatePayload) (*T
 		SetBody(payload).SetResult(&responseSchema).
 		Post("/api/v2/tickets")
 
-	fmt.Printf("Got body:\n%s\n", string(resp.Body()))
+	//fmt.Printf("Got body:\n%s\n", string(resp.Body()))
 	if err != nil {
 		log.Println(err)
 		return nil, err
