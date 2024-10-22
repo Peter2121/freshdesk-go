@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type TicketMessage {
+type TicketMessage struct {
 	Body              string      `json:"body"`
 	BodyText          string      `json:"body_text"`
 	ID                uint64      `json:"id"`
