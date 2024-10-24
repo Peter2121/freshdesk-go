@@ -18,6 +18,8 @@ import (
 type Client interface {
 	// GetAPIStatus() (*interface{}, error)
 
+	PutCustomData(header [2]string, body string, path string) (string, int, error)
+
 	GetTicket(ID uint64) (*Ticket, error)
 	GetTicketWithConversations(ID uint64) (*Ticket, error)
 	GetAllTickets() ([]Ticket, error)
@@ -70,6 +72,24 @@ func NewClient(baseUrl string, user string, password string, maxRequestPerMinute
 	_freshDeskService.restyClient.SetHeader("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(auth)))
 
 	return &_freshDeskService
+}
+
+func (service *freshDeskService) PutCustomData(header [2]string, body string, path string) (string, int, error) {
+	resp, err := service.restyClient.R().
+		SetHeader(header[0], header[1]).
+		SetBody(body).
+		Put(path)
+
+	if err != nil {
+		log.Println(err)
+		return string(resp.Body()), resp.StatusCode(), err
+	}
+
+	if resp.StatusCode() != http.StatusOK {
+		return "", resp.StatusCode(), errors.New(string(resp.Body()))
+	}
+
+	return string(resp.Body()), resp.StatusCode(), nil
 }
 
 // Ticket
