@@ -25,6 +25,7 @@ type Client interface {
 	GetAllTickets() ([]Ticket, error)
 	GetTicketsByCompanyID(companyID, pageSize, page int) ([]Ticket, error, bool)
 	CreateTicket(payload TicketCreatePayload) (*Ticket, error)
+	CreateSdTicket(payload TicketCreatePayload) (*Ticket, error)
 	CreateTicketWithAttachments(payload TicketCreatePayload, files []Attachment) (*Ticket, error)
 	UpdateTicket(ID uint64, payload TicketUpdatePayload) (*Ticket, error)
 	UpdateTicketStatus(ID uint64, payload TicketStatusUpdatePayload) (*Ticket, error)
@@ -145,6 +146,27 @@ func (service *freshDeskService) GetAllTickets() ([]Ticket, error) {
 	return responseSchema, nil
 }
 
+func (service *freshDeskService) CreateSdTicket(payload TicketCreatePayload) (*Ticket, error) {
+
+	var responseSchema SdTicket
+	resp, err := service.restyClient.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(payload).SetResult(&responseSchema).
+		Post("/api/v2/tickets")
+
+	//fmt.Printf("Got body:\n%s\n", string(resp.Body()))
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if resp.StatusCode() != http.StatusCreated {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return &responseSchema.Ticket, nil
+}
+
 func (service *freshDeskService) CreateTicket(payload TicketCreatePayload) (*Ticket, error) {
 
 	var responseSchema Ticket
@@ -153,6 +175,7 @@ func (service *freshDeskService) CreateTicket(payload TicketCreatePayload) (*Tic
 		SetBody(payload).SetResult(&responseSchema).
 		Post("/api/v2/tickets")
 
+	//fmt.Printf("Got body:\n%s\n", string(resp.Body()))
 	if err != nil {
 		log.Println(err)
 		return nil, err

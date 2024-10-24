@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type TicketMessage {
+type TicketMessage struct {
 	Body              string      `json:"body"`
 	BodyText          string      `json:"body_text"`
 	ID                uint64      `json:"id"`
@@ -44,41 +44,45 @@ type TicketMessageCreatePayload struct {
 	BccEmails   []string      `json:"bcc_emails,omitempty"`
 }
 
+type SdTicket struct {
+	Ticket Ticket `json:"ticket"`
+}
+
 type Ticket struct {
-	Attachments     []interface{} `json:"attachments"`
-	CcEmails        []string      `json:"cc_emails"`
-	CompanyID       uint64        `json:"company_id"`
-	CustomFields    interface{}   `json:"custom_fields"`
-	Deleted         bool          `json:"deleted"`
-	Description     string        `json:"description"`
-	DescriptionText string        `json:"description_text"`
-	DueBy           *time.Time    `json:"due_by"`
-	Email           string        `json:"email"`
-	EmailConfigID   int64         `json:"email_config_id"`
-	FacebookID      string        `json:"facebook_id"`
-	FrDueBy         *time.Time    `json:"fr_due_by"`
-	FrEscalated     bool          `json:"fr_escalated"`
-	FwdEmails       []string      `json:"fwd_emails"`
-	GroupID         int64         `json:"group_id"`
-	ID              uint64        `json:"id"`
-	IsEscalated     bool          `json:"is_escalated"`
-	Name            string        `json:"name"`
-	Phone           string        `json:"phone"`
-	Priority        Priority      `json:"priority"`
-	ProductID       int64         `json:"product_id"`
-	ReplyCcEmails   []string      `json:"reply_cc_emails"`
-	RequesterID     int64         `json:"requester_id"` // UserID of the requester
-	ResponderID     int64         `json:"responder_id"`
-	Source          int64         `json:"source"`
-	Spam            bool          `json:"spam"`
-	Status          Status        `json:"status"`
-	Subject         string        `json:"subject"`
-	Tags            []string      `json:"tags"`
-	ToEmails        []string      `json:"to_emails"`
-	TwitterID       string        `json:"twitter_id"`
-	Type            string        `json:"type"`
-	CreatedAt       *time.Time    `json:"created_at"`
-	UpdatedAt       *time.Time    `json:"updated_at"`
+	Attachments     []interface{}   `json:"attachments"`
+	CcEmails        []string        `json:"cc_emails"`
+	CompanyID       uint64          `json:"company_id,omitempty"`
+	CustomFields    interface{}     `json:"custom_fields"`
+	Deleted         bool            `json:"deleted"`
+	Description     string          `json:"description"`
+	DescriptionText string          `json:"description_text"`
+	DueBy           *time.Time      `json:"due_by"`
+	Email           string          `json:"email"`
+	EmailConfigID   int64           `json:"email_config_id"`
+	FacebookID      string          `json:"facebook_id"`
+	FrDueBy         *time.Time      `json:"fr_due_by"`
+	FrEscalated     bool            `json:"fr_escalated"`
+	FwdEmails       []string        `json:"fwd_emails"`
+	GroupID         int64           `json:"group_id"`
+	ID              uint64          `json:"id"`
+	IsEscalated     bool            `json:"is_escalated"`
+	Name            string          `json:"name"`
+	Phone           string          `json:"phone"`
+	Priority        Priority        `json:"priority"`
+	ProductID       int64           `json:"product_id"`
+	ReplyCcEmails   []string        `json:"reply_cc_emails"`
+	RequesterID     int64           `json:"requester_id"` // UserID of the requester
+	ResponderID     int64           `json:"responder_id"`
+	Source          int64           `json:"source"`
+	Spam            bool            `json:"spam"`
+	Status          Status          `json:"status"`
+	Subject         string          `json:"subject"`
+	Tags            []string        `json:"tags"`
+	ToEmails        []string        `json:"to_emails"`
+	TwitterID       string          `json:"twitter_id"`
+	Type            string          `json:"type"`
+	CreatedAt       *time.Time      `json:"created_at"`
+	UpdatedAt       *time.Time      `json:"updated_at"`
 	Conversations   []TicketMessage `json:"conversations"`
 }
 
@@ -160,7 +164,7 @@ type TicketUpdatePayload struct {
 }
 
 type TicketStatusUpdatePayload struct {
-	Status           int64         `json:"status"`
+	Status int64 `json:"status"`
 }
 
 type Contact struct {
@@ -349,29 +353,29 @@ type Group struct {
 }
 
 type CustomObject struct {
-	DisplayID    string                  `json:"display_id"`
-	CreatedTime  uint64                  `json:"created_time"`
-	UpdatedTime  uint64                  `json:"updated_time"`
-	Data         map[string]interface{}  `json:"data"`
-	Version      uint64                  `json:"version"`
-	Metadata     map[string]interface{}  `json:"metadata"`
-	Links        map[string]interface{}  `json:"_links"`
+	DisplayID   string                 `json:"display_id"`
+	CreatedTime uint64                 `json:"created_time"`
+	UpdatedTime uint64                 `json:"updated_time"`
+	Data        map[string]interface{} `json:"data"`
+	Version     uint64                 `json:"version"`
+	Metadata    map[string]interface{} `json:"metadata"`
+	Links       map[string]interface{} `json:"_links"`
 }
 
 type CustomObjectSearchResp struct {
-	Records  []CustomObject          `json:"records"`
-	Links    map[string]interface{}  `json:"_links"`	
+	Records []CustomObject         `json:"records"`
+	Links   map[string]interface{} `json:"_links"`
 }
 
 type CustomObjectUpdatePayload struct {
-	DisplayID    string                  `json:"display_id"`
-	Version      uint64                  `json:"version"`
-	Data         map[string]interface{}  `json:"data"`
+	DisplayID string                 `json:"display_id"`
+	Version   uint64                 `json:"version"`
+	Data      map[string]interface{} `json:"data"`
 }
 
 type CustomObjectUpdateResult struct {
-	DisplayID    string                  `json:"display_id"`
-	CreatedTime  uint64                  `json:"created_time"`
-	UpdatedTime  uint64                  `json:"updated_time"`
-	Data         map[string]interface{}  `json:"data"`
+	DisplayID   string                 `json:"display_id"`
+	CreatedTime uint64                 `json:"created_time"`
+	UpdatedTime uint64                 `json:"updated_time"`
+	Data        map[string]interface{} `json:"data"`
 }
