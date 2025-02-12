@@ -135,6 +135,38 @@ type TicketCreatePayload struct {
 	InternalGroupID  int64         `json:"internal_group_id,omitempty"`
 }
 
+type SdTicketCreatePayload struct {
+	Name             string        `json:"name,omitempty"`
+	RequesterID      int64         `json:"requester_id,omitempty"`
+	Email            string        `json:"email,omitempty"`
+	FacebookID       string        `json:"facebook_id,omitempty"`
+	Phone            string        `json:"phone,omitempty"`
+	TwitterID        string        `json:"twitter_id,omitempty"`
+	UniqueExternalID string        `json:"unique_external_id,omitempty"`
+	Subject          string        `json:"subject,omitempty"`
+	Type             string        `json:"type,omitempty"`
+	Category         string        `json:"category"`
+	Status           int64         `json:"status,omitempty"`
+	Priority         int64         `json:"priority,omitempty"`
+	Description      string        `json:"description,omitempty"`
+	ResponderID      int64         `json:"responder_id,omitempty"`
+	Impact           int64         `json:"impact"`
+	Urgency          int64         `json:"urgency"`
+	Attachments      []interface{} `json:"attachments,omitempty"`
+	CcEmails         []string      `json:"cc_emails,omitempty"`
+	CustomFields     interface{}   `json:"custom_fields,omitempty"`
+	DueBy            *time.Time    `json:"due_by,omitempty"`
+	EmailConfigID    int64         `json:"email_config_id,omitempty"`
+	FrDueBy          *time.Time    `json:"fr_due_by,omitempty"`
+	GroupID          int64         `json:"group_id,omitempty"`
+	ProductID        int64         `json:"product_id,omitempty"`
+	Source           int64         `json:"source,omitempty"`
+	Tags             []string      `json:"tags,omitempty"`
+	CompanyID        uint64        `json:"company_id,omitempty"`
+	InternalAgentID  int64         `json:"internal_agent_id,omitempty"`
+	InternalGroupID  int64         `json:"internal_group_id,omitempty"`
+}
+
 type TicketUpdatePayload struct {
 	Name             string        `json:"name,omitempty"`
 	RequesterID      int64         `json:"requester_id,omitempty"` // UserID of the requester

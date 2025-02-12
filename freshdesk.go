@@ -25,8 +25,9 @@ type Client interface {
 	GetAllTickets() ([]Ticket, error)
 	GetTicketsByCompanyID(companyID, pageSize, page int) ([]Ticket, error, bool)
 	CreateTicket(payload TicketCreatePayload) (*Ticket, error)
-	CreateSdTicket(payload TicketCreatePayload) (*Ticket, error)
+	CreateSdTicket(payload SdTicketCreatePayload) (*Ticket, error)
 	CreateTicketWithAttachments(payload TicketCreatePayload, files []Attachment) (*Ticket, error)
+	CreateSdTicketWithAttachments(payload SdTicketCreatePayload, files []Attachment) (*Ticket, error)
 	UpdateTicket(ID uint64, payload TicketUpdatePayload) (*Ticket, error)
 	UpdateTicketStatus(ID uint64, payload TicketStatusUpdatePayload) (*Ticket, error)
 	CreateTicketMessage(ID uint64, payload TicketMessageCreatePayload) (*TicketMessage, error)
@@ -146,7 +147,7 @@ func (service *freshDeskService) GetAllTickets() ([]Ticket, error) {
 	return responseSchema, nil
 }
 
-func (service *freshDeskService) CreateSdTicket(payload TicketCreatePayload) (*Ticket, error) {
+func (service *freshDeskService) CreateSdTicket(payload SdTicketCreatePayload) (*Ticket, error) {
 
 	var responseSchema SdTicket
 	resp, err := service.restyClient.R().
@@ -161,7 +162,11 @@ func (service *freshDeskService) CreateSdTicket(payload TicketCreatePayload) (*T
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
-		return nil, errors.New(string(resp.Body()))
+		resp_body := string(resp.Body())
+		if len(resp_body) == 0 {
+			resp_body = fmt.Sprintf("Invalid status received: %d", resp.StatusCode())
+		}
+		return nil, errors.New(resp_body)
 	}
 
 	return &responseSchema.Ticket, nil
@@ -192,6 +197,38 @@ func (service *freshDeskService) CreateTicketWithAttachments(payload TicketCreat
 
 	var responseSchema Ticket
 	new_ticket, err := service.CreateTicket(payload)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	for _, att := range files {
+		req := service.restyClient.R()
+		//req = req.SetFileReader("attachments[]", att.FileName, att.FileData) /**** Does not work like this ****/
+		req = req.SetFile("attachments[]", att.FileData.Name())
+		req = req.SetResult(&responseSchema)
+		resp, err1 := req.Put(fmt.Sprintf("/api/v2/tickets/%v", new_ticket.ID))
+		if err1 != nil {
+			log.Println(err1)
+		}
+		if resp.StatusCode() != http.StatusOK {
+			log.Println(string(resp.Body()))
+		}
+	}
+
+	new_ticket, err = service.GetTicket(new_ticket.ID)
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return new_ticket, nil
+}
+
+func (service *freshDeskService) CreateSdTicketWithAttachments(payload SdTicketCreatePayload, files []Attachment) (*Ticket, error) {
+
+	var responseSchema Ticket
+	new_ticket, err := service.CreateSdTicket(payload)
 	if err != nil {
 		log.Println(err)
 		return nil, err
