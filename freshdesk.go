@@ -307,7 +307,7 @@ func (service *freshDeskService) CreateTicketMessage(ID uint64, payload TicketMe
 		return nil, err
 	}
 
-	if resp.StatusCode() != http.StatusOK {
+	if (resp.StatusCode() != http.StatusOK) && (resp.StatusCode() != http.StatusCreated) {
 		return nil, errors.New(string(resp.Body()))
 	}
 
