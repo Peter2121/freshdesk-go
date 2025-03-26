@@ -31,6 +31,7 @@ type Client interface {
 	UpdateTicket(ID uint64, payload TicketUpdatePayload) (*Ticket, error)
 	UpdateTicketStatus(ID uint64, payload TicketStatusUpdatePayload) (*Ticket, error)
 	CreateTicketMessage(ID uint64, payload TicketMessageCreatePayload) (*TicketMessage, error)
+	CreateSdTicketMessage(ID uint64, payload TicketMessageCreatePayload) (*TicketMessage, error)
 	DeleteTicket(ID uint64) (*interface{}, error)
 
 	FindContactByEmail(email string) (Contact, error)
@@ -311,8 +312,30 @@ func (service *freshDeskService) CreateTicketMessage(ID uint64, payload TicketMe
 		return nil, errors.New(string(resp.Body()))
 	}
 
+	// DEBUG
+	//log.Println(string(resp.Body()))
+	// END DEBUG
 	return &responseSchema, nil
 
+}
+
+func (service *freshDeskService) CreateSdTicketMessage(ID uint64, payload TicketMessageCreatePayload) (*TicketMessage, error) {
+	var responseSchema SdTicketMessage
+	resp, err := service.restyClient.R().
+		SetHeader("Content-Type", "application/json").
+		SetBody(payload).SetResult(&responseSchema).
+		Post(fmt.Sprintf("/api/v2/tickets/%v/reply", ID))
+
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if (resp.StatusCode() != http.StatusOK) && (resp.StatusCode() != http.StatusCreated) {
+		return nil, errors.New(string(resp.Body()))
+	}
+
+	return &(responseSchema.Conversation), nil
 }
 
 func (service *freshDeskService) DeleteTicket(ID uint64) (*interface{}, error) {

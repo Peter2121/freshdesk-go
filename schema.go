@@ -5,6 +5,10 @@ import (
 	"time"
 )
 
+type SdTicketMessage struct {
+	Conversation TicketMessage `json:"conversation"`
+}
+
 type TicketMessage struct {
 	Body              string      `json:"body"`
 	BodyText          string      `json:"body_text"`
