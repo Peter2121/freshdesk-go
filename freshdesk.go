@@ -2,6 +2,7 @@ package freshdesk
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -174,12 +175,12 @@ func (service *freshDeskService) CreateSdTicket(payload SdTicketCreatePayload) (
 }
 
 func (service *freshDeskService) CreateTicket(payload TicketCreatePayload) (*Ticket, error) {
-
 	var responseSchema Ticket
+	api_endpoint := "/api/v2/tickets"
 	resp, err := service.restyClient.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(payload).SetResult(&responseSchema).
-		Post("/api/v2/tickets")
+		Post(api_endpoint)
 
 	//fmt.Printf("Got body:\n%s\n", string(resp.Body()))
 	if err != nil {
@@ -188,7 +189,9 @@ func (service *freshDeskService) CreateTicket(payload TicketCreatePayload) (*Tic
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
-		return nil, errors.New(string(resp.Body()))
+		payload_bytes, _ := json.Marshal(payload)
+		err_text := fmt.Sprintf("Got error from FreshDesk API on endpoint: %s\nPayload:%s\nError:%s", api_endpoint, string(payload_bytes), string(resp.Body()))
+		return nil, errors.New(err_text)
 	}
 
 	return &responseSchema, nil
@@ -470,10 +473,11 @@ func (service *freshDeskService) CreateContact(payload ContactCreatePayload) (*C
 
 func (service *freshDeskService) UpdateContact(ID uint64, payload ContactUpdatePayload) (*Contact, error) {
 	var responseSchema Contact
+	api_endpoint := fmt.Sprintf("/api/v2/contacts/%v", ID)
 	resp, err := service.restyClient.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(payload).SetResult(&responseSchema).
-		Put(fmt.Sprintf("/api/v2/contacts/%v", ID))
+		Put(api_endpoint)
 
 	if err != nil {
 		log.Println(err)
@@ -481,7 +485,9 @@ func (service *freshDeskService) UpdateContact(ID uint64, payload ContactUpdateP
 	}
 
 	if resp.StatusCode() != http.StatusOK {
-		return nil, errors.New(string(resp.Body()))
+		payload_bytes, _ := json.Marshal(payload)
+		err_text := fmt.Sprintf("Got error from FreshDesk API on endpoint: %s\nPayload:%s\nError:%s", api_endpoint, string(payload_bytes), string(resp.Body()))
+		return nil, errors.New(err_text)
 	}
 
 	return &responseSchema, nil
