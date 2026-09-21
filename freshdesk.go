@@ -189,8 +189,10 @@ func (service *freshDeskService) CreateTicket(payload TicketCreatePayload) (*Tic
 	}
 
 	if resp.StatusCode() != http.StatusCreated {
+		var sb strings.Builder
+		resp.Header().Write(&sb)
 		payload_bytes, _ := json.Marshal(payload)
-		err_text := fmt.Sprintf("Got error from FreshDesk API on endpoint: %s\nPayload:%s\nError:%s", api_endpoint, string(payload_bytes), string(resp.Body()))
+		err_text := fmt.Sprintf("Got error from FreshDesk API on endpoint: %s\nPayload:%s\nError:%s\nHeaders:%s\n", api_endpoint, string(payload_bytes), string(resp.Body()), sb.String())
 		return nil, errors.New(err_text)
 	}
 
@@ -485,8 +487,10 @@ func (service *freshDeskService) UpdateContact(ID uint64, payload ContactUpdateP
 	}
 
 	if resp.StatusCode() != http.StatusOK {
+		var sb strings.Builder
+		resp.Header().Write(&sb)
 		payload_bytes, _ := json.Marshal(payload)
-		err_text := fmt.Sprintf("Got error from FreshDesk API on endpoint: %s\nPayload:%s\nError:%s", api_endpoint, string(payload_bytes), string(resp.Body()))
+		err_text := fmt.Sprintf("Got error from FreshDesk API on endpoint: %s\nPayload:%s\nError:%s\nHeaders:%s\n", api_endpoint, string(payload_bytes), string(resp.Body()), sb.String())
 		return nil, errors.New(err_text)
 	}
 
