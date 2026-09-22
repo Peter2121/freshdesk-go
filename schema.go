@@ -5,6 +5,26 @@ import (
 	"time"
 )
 
+type OrderBy struct{ v string }
+
+func (o OrderBy) String() string { return o.v }
+
+var (
+	OrderByCreated = OrderBy{"created_at"}
+	OrderByUpdated = OrderBy{"updated_at"}
+	OrderByDue     = OrderBy{"due_by"}
+	OrderByStatus  = OrderBy{"status"}
+)
+
+type OrderType struct{ v string }
+
+func (o OrderType) String() string { return o.v }
+
+var (
+	OrderTypeAsc  = OrderType{"asc"}
+	OrderTypeDesc = OrderType{"desc"}
+)
+
 type SdTicketMessage struct {
 	Conversation TicketMessage `json:"conversation"`
 }

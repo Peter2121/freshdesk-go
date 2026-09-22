@@ -24,7 +24,7 @@ type Client interface {
 	GetTicket(ID uint64) (*Ticket, error)
 	GetTicketWithConversations(ID uint64) (*Ticket, error)
 	GetAllTickets() ([]Ticket, error)
-	GetTicketsByCompanyID(companyID, pageSize, page int) ([]Ticket, error, bool)
+	GetTicketsByCompanyID(companyID uint64, pageSize, page int, order_by OrderBy, order_type OrderType) ([]Ticket, error, bool)
 	CreateTicket(payload TicketCreatePayload) (*Ticket, error)
 	CreateSdTicket(payload SdTicketCreatePayload) (*Ticket, error)
 	CreateTicketWithAttachments(payload TicketCreatePayload, files []Attachment) (*Ticket, error)
@@ -646,13 +646,14 @@ func (service *freshDeskService) DeleteCompany(ID uint64) (*interface{}, error) 
 	return &responseSchema, nil
 }
 
-func (service *freshDeskService) GetTicketsByCompanyID(companyID, pageSize, page int) ([]Ticket, error, bool) {
+func (service *freshDeskService) GetTicketsByCompanyID(companyID uint64, pageSize, page int, order_by OrderBy, order_type OrderType) ([]Ticket, error, bool) {
 	service.rateLimiter.Take()
-
 	var responseSchema []Ticket
+	request := fmt.Sprintf("/api/v2/tickets?company_id=%d&per_page=%d&page=%d&order_by=%s&order_type=%s", companyID, pageSize, page, order_by.String(), order_type.String())
 	resp, err := service.restyClient.R().
 		SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
-		Get(fmt.Sprintf("/api/v2/tickets?company_id=%v&per_page=%v&page=%v", companyID, pageSize, page))
+		Get(request)
+		//Get(fmt.Sprintf("/api/v2/tickets?company_id=%v&per_page=%v&page=%v", companyID, pageSize, page))
 
 	if err != nil {
 		return nil, err, false
