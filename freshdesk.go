@@ -82,6 +82,10 @@ func NewClient(baseUrl string, user string, password string, maxRequestPerMinute
 }
 
 func (service *freshDeskService) PutCustomData(header [2]string, body string, path string) (string, int, error) {
+	if _, errurl := url.Parse(path); errurl != nil {
+		return "", 0, fmt.Errorf("invalid path '%s': %w", path, errurl)
+	}
+
 	resp, err := service.restyClient.R().
 		SetHeader(header[0], header[1]).
 		SetBody(body).
@@ -89,6 +93,9 @@ func (service *freshDeskService) PutCustomData(header [2]string, body string, pa
 
 	if err != nil {
 		log.Println(err)
+		if resp == nil {
+			return "", 0, err
+		}
 		return string(resp.Body()), resp.StatusCode(), err
 	}
 
@@ -211,14 +218,23 @@ func (service *freshDeskService) CreateTicketWithAttachments(payload TicketCreat
 		return nil, err
 	}
 
+	attachment_path := fmt.Sprintf("/api/v2/tickets/%v", new_ticket.ID)
+	if _, errurl := url.Parse(attachment_path); errurl != nil {
+		log.Printf("invalid attachment path '%s': %v\n", attachment_path, errurl)
+		return new_ticket, nil
+	}
+
 	for _, att := range files {
 		req := service.restyClient.R()
 		//req = req.SetFileReader("attachments[]", att.FileName, att.FileData) /**** Does not work like this ****/
 		req = req.SetFile("attachments[]", att.FileData.Name())
 		req = req.SetResult(&responseSchema)
-		resp, err1 := req.Put(fmt.Sprintf("/api/v2/tickets/%v", new_ticket.ID))
+		resp, err1 := req.Put(attachment_path)
 		if err1 != nil {
 			log.Println(err1)
+		}
+		if resp == nil {
+			continue
 		}
 		if resp.StatusCode() != http.StatusOK {
 			log.Println(string(resp.Body()))
@@ -243,14 +259,23 @@ func (service *freshDeskService) CreateSdTicketWithAttachments(payload SdTicketC
 		return nil, err
 	}
 
+	attachment_path := fmt.Sprintf("/api/v2/tickets/%v", new_ticket.ID)
+	if _, errurl := url.Parse(attachment_path); errurl != nil {
+		log.Printf("invalid attachment path '%s': %v\n", attachment_path, errurl)
+		return new_ticket, nil
+	}
+
 	for _, att := range files {
 		req := service.restyClient.R()
 		//req = req.SetFileReader("attachments[]", att.FileName, att.FileData) /**** Does not work like this ****/
 		req = req.SetFile("attachments[]", att.FileData.Name())
 		req = req.SetResult(&responseSchema)
-		resp, err1 := req.Put(fmt.Sprintf("/api/v2/tickets/%v", new_ticket.ID))
+		resp, err1 := req.Put(attachment_path)
 		if err1 != nil {
 			log.Println(err1)
+		}
+		if resp == nil {
+			continue
 		}
 		if resp.StatusCode() != http.StatusOK {
 			log.Println(string(resp.Body()))
