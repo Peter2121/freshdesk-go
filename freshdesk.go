@@ -603,7 +603,7 @@ func (service *freshDeskService) SearchCompanies(mask string) ([]CompanyName, er
 	var responseSchema SrchCompanyResp
 	resp, err := service.restyClient.R().
 		SetHeader("Content-Type", "application/json").SetResult(&responseSchema).
-		Get(fmt.Sprintf("%v%v", "/api/v2/companies/autocomplete?name=", mask))
+		Get(fmt.Sprintf("%v%v", "/api/v2/companies/autocomplete?name=", url.QueryEscape(mask)))
 
 	if err != nil {
 		log.Println(err)
@@ -827,7 +827,7 @@ func (service *freshDeskService) UpdateCustomObject(schema_id uint64, payload Cu
 	resp, err := service.restyClient.R().
 		SetHeader("Content-Type", "application/json").
 		SetBody(payload).SetResult(&responseSchema).
-		Put(fmt.Sprintf("/api/v2/custom_objects/schemas/%d/records/%s", schema_id, payload.DisplayID))
+		Put(fmt.Sprintf("/api/v2/custom_objects/schemas/%d/records/%s", schema_id, url.PathEscape(payload.DisplayID)))
 
 	if err != nil {
 		log.Println(err)
