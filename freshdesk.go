@@ -16,6 +16,8 @@ import (
 	"go.uber.org/ratelimit"
 )
 
+const DEFAULT_HTTP_TIMEOUT = 30 * time.Second
+
 type Client interface {
 	// GetAPIStatus() (*interface{}, error)
 
@@ -73,6 +75,7 @@ func NewClient(baseUrl string, user string, password string, maxRequestPerMinute
 	auth := user + ":" + password
 
 	_freshDeskService.restyClient.SetBaseURL(baseUrl)
+	_freshDeskService.restyClient.SetTimeout(DEFAULT_HTTP_TIMEOUT)
 	_freshDeskService.restyClient.SetHeader("Authorization", "Basic "+base64.StdEncoding.EncodeToString([]byte(auth)))
 
 	return &_freshDeskService
