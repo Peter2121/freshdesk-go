@@ -1,15 +1,15 @@
 module github.com/Peter2121/freshdesk-go
 
-go 1.18
+go 1.23.0
 
 require (
-	github.com/go-resty/resty/v2 v2.7.0
-	go.uber.org/ratelimit v0.2.0
+	github.com/go-resty/resty/v2 v2.17.2
+	go.uber.org/ratelimit v0.3.1
 )
 
 require (
-	github.com/andres-erbsen/clock v0.0.0-20160526145045-9e14626cd129 // indirect
-	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
+	github.com/benbjohnson/clock v1.3.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 )
 
 replace github.com/sakib0hasan/freshdesk-go => github.com/Peter2121/freshdesk-go v0.0.0-20230808152121-addd902c5f2a
